@@ -1,0 +1,808 @@
+{
+	"info": {
+		"_postman_id": "d08580f0-0acf-467c-9c37-c6d7a9072a8e",
+		"name": "Mimir",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "rules_group",
+			"item": [
+				{
+					"name": "rules_group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Scope-OrgID",
+								"value": "{{tenant}}",
+								"type": "default"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/yml",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "name: MySQLGroup\nrules:\n- alert: NodeFilesystemSpaceFillingUp\n  annotations:\n    description: Filesystem on {{ $labels.device }} at {{ $labels.instance }} has\n      only {{ printf \"%.2f\" $value }}% available space left and is filling up.\n    summary: Filesystem is predicted to run out of space within the next 24 hours.\n  expr: \"(\\n  node_filesystem_avail_bytes{job=\\\"node\\\",fstype!=\\\"\\\"} / node_filesystem_size_bytes{job=\\\"\\\n    node\\\",fstype!=\\\"\\\"} * 100 < 40\\nand\\n  predict_linear(node_filesystem_avail_bytes{job=\\\"\\\n    node\\\",fstype!=\\\"\\\"}[6h], 24*60*60) < 0\\nand\\n  node_filesystem_readonly{job=\\\"\\\n    node\\\",fstype!=\\\"\\\"} == 0\\n)\\n\"\n  for: 1h\n  labels:\n    severity: warning"
+						},
+						"url": {
+							"raw": "{{mimir_endpoint}}/prometheus/config/v1/rules/MySQLAlerts",
+							"host": [
+								"{{mimir_endpoint}}"
+							],
+							"path": [
+								"prometheus",
+								"config",
+								"v1",
+								"rules",
+								"MySQLAlerts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rules_group_json",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Scope-OrgID",
+								"value": "{{tenant}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{mimir_endpoint}}/prometheus/api/v1/rules",
+							"host": [
+								"{{mimir_endpoint}}"
+							],
+							"path": [
+								"prometheus",
+								"api",
+								"v1",
+								"rules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rules_allnamesapce_yml",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Scope-OrgID",
+								"value": "{{tenant}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{mimir_endpoint}}/prometheus/api/v1/rules",
+							"host": [
+								"{{mimir_endpoint}}"
+							],
+							"path": [
+								"prometheus",
+								"api",
+								"v1",
+								"rules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rules_group",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Scope-OrgID",
+								"value": "demo",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9009/prometheus/config/v1/rules/demo_namespace/MyGroupName",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9009",
+							"path": [
+								"prometheus",
+								"config",
+								"v1",
+								"rules",
+								"demo_namespace",
+								"MyGroupName"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rules_group_namespace",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Scope-OrgID",
+								"value": "demo",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9009/prometheus/config/v1/rules/k8s",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9009",
+							"path": [
+								"prometheus",
+								"config",
+								"v1",
+								"rules",
+								"k8s"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rulertenants_yml",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Scope-OrgID",
+								"value": "{{tenant}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{mimir_endpoint}}/prometheus/config/v1/rules",
+							"host": [
+								"{{mimir_endpoint}}"
+							],
+							"path": [
+								"prometheus",
+								"config",
+								"v1",
+								"rules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all ruler group",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Scope-OrgID",
+								"value": "{{tenant}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{mimir_endpoint}}/ruler/rule_groups",
+							"host": [
+								"{{mimir_endpoint}}"
+							],
+							"path": [
+								"ruler",
+								"rule_groups"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "altermanager",
+			"item": [
+				{
+					"name": "status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{mimir_endpoint}}/multitenant_alertmanager/status",
+							"host": [
+								"{{mimir_endpoint}}"
+							],
+							"path": [
+								"multitenant_alertmanager",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ui",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Scope-OrgID",
+								"value": "{{tenant}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{mimir_endpoint}}/alertmanager/",
+							"host": [
+								"{{mimir_endpoint}}"
+							],
+							"path": [
+								"alertmanager",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "alerts config",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Scope-OrgID",
+								"value": "{{tenant}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{mimir_endpoint}}/api/v1/alerts",
+							"host": [
+								"{{mimir_endpoint}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"alerts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "alerts config",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Scope-OrgID",
+								"value": "{{tenant}}",
+								"type": "default"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/yml",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{mimir_endpoint}}/api/v1/alerts",
+							"host": [
+								"{{mimir_endpoint}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"alerts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "alerts config",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Scope-OrgID",
+								"value": "{{tenant}}",
+								"type": "default"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/yml",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "template_files:\n    body:\n        \"{{ define \\\"body\\\" }}\\n  {{ range .Alerts }}\\n      *Alert:* [{{ .Labels.severity\n        }}] [{{ .Labels.project}}] [{{ .Labels.region }}] : {{ .Annotations.message }}\n        \\n      *Description:* {{ .Annotations.message }}\\n      *Details:*\\n      {{\n        range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`\\n      {{ end }}\\n\n        \\     {{ if gt (len .DashboardURL ) 0 }}\\n        Go to dashboard: {{ .DashboardURL\n        }}\\n      {{ end }}\\n      {{ if gt (len .PanelURL ) 0 }}\\n        Go to panel:\n        {{ .PanelURL }}\\n      {{ end }}\\n      {{ if gt (len .SilenceURL ) 0 }}\\n        Silence\n        alert: {{ .SilenceURL }}\\n      {{ end }}\\n  {{ end }}\\n{{ end }}\"\n    slack:\n        \"{{ define \\\"alert_severity_prefix_emoji\\\" -}}\\n\\t{{- if ne .Status \\\"firing\\\"\n        -}}\\n\\t\\t:white_check_mark:\\n\\t{{- else if eq .CommonLabels.severity \\\"critical\\\"\n        -}}\\n\\t\\t:red_circle:\\n\\t{{- else if eq .CommonLabels.severity \\\"warning\\\" -}}\\n\\t\\t:warning:\\n\\t{{-\n        end -}}\\n{{- end -}}\\n\\n\\n{{ define \\\"slack.title\\\" -}}\\n\\t{{ template \\\"__alert_severity_prefix_emoji\\\"\n        . }} \\n\\t[{{- .Status | toUpper -}}{{- if eq .Status \\\"firing\\\" }} x {{ .Alerts.Firing\n        | len -}}{{- end }}  | {{ .CommonLabels.env | toUpper -}} ] ||  {{ .CommonLabels.alertname\n        -}}\\n{{- end -}}\"\n    title:\n        \"{{ define \\\"template_title\\\" }}\\n[{{ .Status | toUpper }}: {{ if eq .Status\n        \\\"firing\\\" }}{{ .Alerts.Firing | len }}{{ else if eq .Status \\\"resolved\\\" }}{{.Alerts.Resolved\n        | len }}{{ end }}] {{range $i, $e := .Alerts}} {{ if eq $i 0 }} [{{ .Labels.project\n        }}] {{.Labels.alertname}} {{end}} \\n{{end}}\\n{{ end }}\"\nalertmanager_config: |\n    global:\n        smtp_auth_password: password\n        smtp_auth_username: alertmanager\n        smtp_from: alertmanager@example.org\n        smtp_smarthost: localhost:25\n\n    receivers:\n        - name: WF Pagerduty\n    \n        - name: wf-prod-garuda-alerts\n   \n        - name: WF AUS slack\n\n        - name: WF JAPAN slack\n\n        - name: Wildfire-PROD-DB-PagerDuty-Critical\n\n        - name: WF India slack\n\n        - name: WF GER slack\n\n        - name: WF JP PD\n\n        - name: wf-prod-smaas-alerts\n\n        - name: wf-smaas-prod-pd\n          \n\n    route:\n        group_by:\n            - alertname\n            - region\n            - project\n        receiver: wf-prod-garuda-alerts\n        routes:\n            - matchers:\n                - pagerduty!=\"false\"\n              receiver: WF Pagerduty\n              group_by:\n                - alertname\n                - project\n                - region\n              continue: true\n              \n            - matchers:\n                - project=\"wildfire-australia\"\n              receiver: WF AUS slack\n              continue: true\n\n            - matchers:\n                - grafana_folder!=\"MySQL\"\n                - project=\"wildfire-japan\"\n              receiver: WF JAPAN slack\n              continue: true\n\n            - matchers:\n                - grafana_folder!=\"MySQL\"\n                - project=\"wildfire-japan\"\n              receiver: WF JAPAN slack\n              continue: true\n\n            - matchers:\n                - severity=\"warning\"\n                - wf_pd_notify='true'\n              receiver: Wildfire-PROD-DB-PagerDuty-Critical\n              continue: true\n\n            - matchers:\n                - project=\"wildfire-india\"\n              receiver: WF India slack\n              continue: true\n\n            - matchers:\n                - project=\"wildfire-germany\"\n              receiver: WF GER slack\n              continue: true\n\n            - matchers:\n                - project=\"wildfire-japan\"\n              receiver: WF JP PD\n              continue: true\n\n            - matchers:\n                - alert=\"smaas\"\n              receiver: wf-prod-smaas-alerts\n              continue: true\n\n            - matchers:\n                - alert=\"smaas\"\n                - notify=\"pd\"\n              receiver: wf-smaas-prod-pd\n              continue: true\n\n    templates:\n        - slack\n        - title\n        - body\n"
+						},
+						"url": {
+							"raw": "{{mimir_endpoint}}/api/v1/alerts",
+							"host": [
+								"{{mimir_endpoint}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"alerts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9009/api/v1/status/buildinfo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9009",
+					"path": [
+						"api",
+						"v1",
+						"status",
+						"buildinfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tenant stats",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "{{tenant}}",
+						"type": "default",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/yml",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{mimir_endpoint}}/distributor/all_user_stats",
+					"host": [
+						"{{mimir_endpoint}}"
+					],
+					"path": [
+						"distributor",
+						"all_user_stats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fetch ingester ring",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "{{tenant}}",
+						"type": "default",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/yml",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{mimir_endpoint}}/ingester/ring",
+					"host": [
+						"{{mimir_endpoint}}"
+					],
+					"path": [
+						"ingester",
+						"ring"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "rules group",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{mimir_endpoint}}/ruler/rule_groups",
+					"host": [
+						"{{mimir_endpoint}}"
+					],
+					"path": [
+						"ruler",
+						"rule_groups"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "instant query",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "{{tenant}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{mimir_endpoint}}/prometheus/api/v1/query?query=max by (persistentvolumeclaim,namespace) (kubelet_volume_stats_capacity_bytes { namespace =~ \"wildfire\" , cluster=\"garuda-prod-eu-west1\"})&start=2022-12-25 17:28:43.148445&end=",
+					"host": [
+						"{{mimir_endpoint}}"
+					],
+					"path": [
+						"prometheus",
+						"api",
+						"v1",
+						"query"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "max by (persistentvolumeclaim,namespace) (kubelet_volume_stats_capacity_bytes { namespace =~ \"wildfire\" , cluster=\"garuda-prod-eu-west1\"})"
+						},
+						{
+							"key": "start",
+							"value": "2022-12-25 17:28:43.148445"
+						},
+						{
+							"key": "end",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fetch metrics",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "{{tenant}}",
+						"type": "default"
+					},
+					{
+						"key": "arch-team-1",
+						"value": "",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{mimir_endpoint}}/prometheus/api/v1/label/__name__/values",
+					"host": [
+						"{{mimir_endpoint}}"
+					],
+					"path": [
+						"prometheus",
+						"api",
+						"v1",
+						"label",
+						"__name__",
+						"values"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "match[]",
+							"value": "{cluster=\"fe-stg3-us-central1\"}",
+							"disabled": true
+						},
+						{
+							"key": "end",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fetch labelsvalue",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "{{tenant}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{mimir_endpoint}}/prometheus/api/v1/label/bucket/values",
+					"host": [
+						"{{mimir_endpoint}}"
+					],
+					"path": [
+						"prometheus",
+						"api",
+						"v1",
+						"label",
+						"bucket",
+						"values"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "series labelsvalue",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "{{tenant}}",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{mimir_endpoint}}/prometheus/api/v1/series?match[]={cluster=\"ps_eu1_eks\"}&start=1669547457.92952&end=1669547577.92952",
+					"host": [
+						"{{mimir_endpoint}}"
+					],
+					"path": [
+						"prometheus",
+						"api",
+						"v1",
+						"series"
+					],
+					"query": [
+						{
+							"key": "match[]",
+							"value": "{cluster=\"ps_eu1_eks\"}"
+						},
+						{
+							"key": "start",
+							"value": "1669547457.92952"
+						},
+						{
+							"key": "end",
+							"value": "1669547577.92952"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "metadata",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "{{tenant}}",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{mimir_endpoint}}/prometheus/api/v1/label/__name__/values",
+					"host": [
+						"{{mimir_endpoint}}"
+					],
+					"path": [
+						"prometheus",
+						"api",
+						"v1",
+						"label",
+						"__name__",
+						"values"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "1669567592.076731",
+							"disabled": true
+						},
+						{
+							"key": "match[]",
+							"value": "None",
+							"disabled": true
+						},
+						{
+							"key": "end",
+							"value": "1669567712.076731",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fetch labels",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "{{tenant}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{mimir_endpoint}}/prometheus/api/v1/labels?start&end",
+					"host": [
+						"{{mimir_endpoint}}"
+					],
+					"path": [
+						"prometheus",
+						"api",
+						"v1",
+						"labels"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": null
+						},
+						{
+							"key": "end",
+							"value": null
+						},
+						{
+							"key": "match[]",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "lables_name_cardinality",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "{{tenant}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{mimir_endpoint}}/prometheus/api/v1/cardinality/label_names",
+					"host": [
+						"{{mimir_endpoint}}"
+					],
+					"path": [
+						"prometheus",
+						"api",
+						"v1",
+						"cardinality",
+						"label_names"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "lables_Value_cardinality",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "{{tenant}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{mimir_endpoint}}/prometheus/api/v1/cardinality/label_values?label_names[]=__name__",
+					"host": [
+						"{{mimir_endpoint}}"
+					],
+					"path": [
+						"prometheus",
+						"api",
+						"v1",
+						"cardinality",
+						"label_values"
+					],
+					"query": [
+						{
+							"key": "label_names[]",
+							"value": "__name__"
+						},
+						{
+							"key": "limit",
+							"value": "500",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "demo",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:9009/prometheus/api/v1/cardinality/label_values?label_names[]=bucket",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9009",
+					"path": [
+						"prometheus",
+						"api",
+						"v1",
+						"cardinality",
+						"label_values"
+					],
+					"query": [
+						{
+							"key": "label_names[]",
+							"value": "bucket"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

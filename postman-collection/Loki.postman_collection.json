@@ -1,0 +1,356 @@
+{
+	"info": {
+		"_postman_id": "f30a616f-f6a3-4542-80ce-a029f5593006",
+		"name": "Loki",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "metrics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{loki_endpoint}}/metrics",
+					"host": [
+						"{{loki_endpoint}}"
+					],
+					"path": [
+						"metrics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "compactor ring",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{loki_endpoint}}/compactor/ring",
+					"host": [
+						"{{loki_endpoint}}"
+					],
+					"path": [
+						"compactor",
+						"ring"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "builder",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "garuda",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{loki_endpoint}}/loki/api/v1/labels",
+					"host": [
+						"{{loki_endpoint}}"
+					],
+					"path": [
+						"loki",
+						"api",
+						"v1",
+						"labels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "rules",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "ace",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{loki_endpoint}}/loki/api/v1/rules",
+					"host": [
+						"{{loki_endpoint}}"
+					],
+					"path": [
+						"loki",
+						"api",
+						"v1",
+						"rules"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "labels",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "{{tenant}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{loki_endpoint}}/loki/api/v1/labels",
+					"host": [
+						"{{loki_endpoint}}"
+					],
+					"path": [
+						"loki",
+						"api",
+						"v1",
+						"labels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "query",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "demo|demo",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{loki_endpoint}}/loki/api/v1/query?query=sum(rate({job=\"varlogs\"}[10m])) by (level)",
+					"host": [
+						"{{loki_endpoint}}"
+					],
+					"path": [
+						"loki",
+						"api",
+						"v1",
+						"query"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "sum(rate({job=\"varlogs\"}[10m])) by (level)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "push",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"streams\": [\n    {\n      \"stream\": {\n        \"label\": \"value\"\n      },\n      \"values\": [\n          [ \"<unix epoch in nanoseconds>\", \"<log line>\" ],\n          [ \"<unix epoch in nanoseconds>\", \"<log line>\" ]\n      ]\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{loki_endpoint}}/loki/api/v1/labels",
+					"host": [
+						"{{loki_endpoint}}"
+					],
+					"path": [
+						"loki",
+						"api",
+						"v1",
+						"labels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "rules",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "{{tenant}}",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/yaml",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "name: loki-test\nrules:\n- alert: LokiRequestErrorsdemo\n  expr: rate({container=\"getting-started_grafana_1\"} |= ``[1m])\n  labels:\n    severity: critical",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{loki_endpoint}}/loki/api/v1/rules/lokirules",
+					"host": [
+						"{{loki_endpoint}}"
+					],
+					"path": [
+						"loki",
+						"api",
+						"v1",
+						"rules",
+						"lokirules"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "fake",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/yaml",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "name: wildfire\nrules:\n  - alert: LokiRequestErrorsdemo\n    expr: rate({stream=\"stderr\"} |= ``[60m])\n    labels:\n      severity: critical\n",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{endpoint}}loki/api/v1/rules/temp1",
+					"host": [
+						"{{endpoint}}loki"
+					],
+					"path": [
+						"api",
+						"v1",
+						"rules",
+						"temp1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "promalerts",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "fake",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/yaml",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "name: wildfire\nrules:\n  - alert: LokiRequestErrorsdemo\n    expr: rate({stream=\"stderr\"} |= ``[60m])\n    labels:\n      severity: critical\n",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{endpoint}}/prometheus/api/v1/alerts",
+					"host": [
+						"{{endpoint}}"
+					],
+					"path": [
+						"prometheus",
+						"api",
+						"v1",
+						"alerts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "promrules Copy",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Scope-OrgID",
+						"value": "fake",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/yaml",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "name: wildfire\nrules:\n  - alert: LokiRequestErrorsdemo\n    expr: rate({stream=\"stderr\"} |= ``[60m])\n    labels:\n      severity: critical\n",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{endpoint}}/prometheus/api/v1/rules",
+					"host": [
+						"{{endpoint}}"
+					],
+					"path": [
+						"prometheus",
+						"api",
+						"v1",
+						"rules"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

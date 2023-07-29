@@ -1,0 +1,75 @@
+version: "3.7"
+
+x-logging: &loki-logging
+  driver: json-file
+  options:
+    tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"    
+
+services:
+  loki:
+    image: grafana/loki:2.6.0
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./config/loki/loki:/loki
+      - ./config/loki/loki-config.yaml:/mnt/config/loki-config.yaml
+      - ./rules/:/tmp/rules/fake/
+    command: 
+      - -config.file=/mnt/config/loki-config.yaml
+    networks:
+      - loki
+    logging: *loki-logging  
+
+  promtail:
+    image: grafana/promtail:2.6.1
+    volumes:
+      - ./config/loki/promtail-config.yaml:/mnt/config/promtail-config.yaml
+      - /var/lib/docker/containers:/host/containers
+    command: -config.file /mnt/config/promtail-config.yaml
+    networks:
+      - loki
+    logging: *loki-logging  
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes: 
+      - grafana-data:/var/lib/grafana
+      - ./config/grafana/provisioning/:/etc/grafana/provisioning/
+    networks:
+      - loki
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: testloki
+    logging: *loki-logging    
+  
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --web.enable-remote-write-receiver
+      - --log.level=error
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yaml:/etc/prometheus/prometheus.yml
+    networks:
+      - loki
+
+  demo-app:
+    image: ealen/echo-server
+    ports: 
+        - "3001:80"   
+    networks:
+      - loki
+    logging: *loki-logging  
+
+volumes:
+  grafana-data: 
+
+networks:
+  loki:
+

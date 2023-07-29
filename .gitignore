@@ -1,0 +1,3 @@
+.DS_Store
+config/loki/loki/wal
+config/tempo/tempo-data

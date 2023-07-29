@@ -1,0 +1,45 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:5555
+      http:
+        endpoint: 0.0.0.0:6666
+        cors:
+          allowed_origins:
+            - "http://*"
+            - "https://*"
+
+exporters:
+  logging:
+    verbosity: detailed
+    sampling_initial: 5
+    sampling_thereafter: 200
+  prometheus:
+    endpoint: "otel-collector:6060"
+  otlp:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+  # prometheusremotewrite:
+  #   endpoint: "http://vector:5050"
+  #   tls:
+  #     insecure: true
+
+processors:
+  batch:
+
+service:
+  pipelines:
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging,prometheus]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging,otlp]
